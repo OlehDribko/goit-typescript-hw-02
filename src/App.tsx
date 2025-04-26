@@ -1,59 +1,53 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import Modal from "react-modal";
+import React from "react";
 import SearchBar from "./components/SearchBar/SearchBar.tsx";
 import ImageGallery from "./components/ImageGallery/ImageGallery.tsx";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn.tsx";
 import Loader from "./components/Loader/Loader.tsx";
-import ImageModal from "./components/ImageModal/ImageModal";
-import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
-
-const API_KEY = "Xg7i_oxAaJSlMbaYoc7u2q97M_kEQYjBKm0pkQO7qOM";
+import ImageModal from "./components/ImageModal/ImageModal.tsx";
+import ErrorMessage from "./components/ErrorMessage/ErrorMessage.tsx";
+import fetchImages from "./api.ts";
+import { imageProps } from "./types/image.types.ts";
 
 function App() {
-  const [param, setParam] = useState("");
-  const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [error, setError] = useState(null);
+  const [param, setParam] = useState<string>("");
+  const [images, setImages] = useState<imageProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<imageProps | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
+  //
+
+  //
   useEffect(() => {
     if (!param) return;
 
-    async function fetchArticles() {
+    const loadImages = async () => {
       setLoading(true);
       setError(null);
+
       try {
-        const response = await axios.get(
-          "https://api.unsplash.com/search/photos",
-          {
-            params: {
-              query: param,
-              client_id: API_KEY,
-              page: page,
-            },
-          }
-        );
-        setImages((prevImages) => [...prevImages, ...response.data.results]);
-      } catch (err) {
+        const fetchedImages = await fetchImages({ query: param, page });
+        setImages((prevImages) => [...prevImages, ...fetchedImages]);
+      } catch (error) {
         setError("Щось пішло не так, спробуйте ще раз.");
       } finally {
         setLoading(false);
       }
-    }
+    };
 
-    fetchArticles();
+    loadImages();
   }, [param, page]);
 
-  const handleSearch = (topic) => {
+  const handleSearch = (topic: string) => {
     setPage(1);
-    setImages([]); // Очищаємо попередні зображення
+    setImages([]);
     setParam(topic);
   };
 
-  const handleImageClick = (image) => {
+  const handleImageClick = (image: imageProps) => {
     setSelectedImage(image);
     setModalIsOpen(true);
   };

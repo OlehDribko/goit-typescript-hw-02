@@ -16,6 +16,6 @@ export type imageGalleryProp = {
 export type ImageModalProps = {
     isOpen: boolean,
     onClose: () => void,
-    image:imageProps,
+    image:imageProps| null,
 }
 
