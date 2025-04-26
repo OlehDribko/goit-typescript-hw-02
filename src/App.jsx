@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Modal from "react-modal";
-import SearchBar from "./components/SearchBar/SearchBar";
-import ImageGallery from "./components/ImageGallery/ImageGallery";
-import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
-import Loader from "./components/Loader/Loader";
+import SearchBar from "./components/SearchBar/SearchBar.tsx";
+import ImageGallery from "./components/ImageGallery/ImageGallery.tsx";
+import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn.tsx";
+import Loader from "./components/Loader/Loader.tsx";
 import ImageModal from "./components/ImageModal/ImageModal";
 import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 
@@ -26,13 +26,16 @@ function App() {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get("https://api.unsplash.com/search/photos", {
-          params: {
-            query: param,
-            client_id: API_KEY,
-            page: page,
-          },
-        });
+        const response = await axios.get(
+          "https://api.unsplash.com/search/photos",
+          {
+            params: {
+              query: param,
+              client_id: API_KEY,
+              page: page,
+            },
+          }
+        );
         setImages((prevImages) => [...prevImages, ...response.data.results]);
       } catch (err) {
         setError("Щось пішло не так, спробуйте ще раз.");
@@ -60,9 +63,17 @@ function App() {
       <SearchBar onSearch={handleSearch} />
       {loading && <Loader />}
       {error && <ErrorMessage message={error} />}
-      {images.length > 0 && <ImageGallery images={images} onImageClick={handleImageClick} />}
-      {images.length > 0 && !loading && <LoadMoreBtn onClick={() => setPage((prev) => prev + 1)} />}
-      <ImageModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)} image={selectedImage} />
+      {images.length > 0 && (
+        <ImageGallery images={images} onImageClick={handleImageClick} />
+      )}
+      {images.length > 0 && !loading && (
+        <LoadMoreBtn onClick={() => setPage((prev) => prev + 1)} />
+      )}
+      <ImageModal
+        isOpen={modalIsOpen}
+        onClose={() => setModalIsOpen(false)}
+        image={selectedImage}
+      />
     </div>
   );
 }

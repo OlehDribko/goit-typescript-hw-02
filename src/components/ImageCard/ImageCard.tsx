@@ -1,4 +1,7 @@
-const ImageCard = ({ image, onImageClick }) => {
+import React from "react";
+import { imageCardProps } from "../../types/image.types";
+
+const ImageCard = ({ image, onImageClick }: imageCardProps) => {
   return (
     <div>
       <img

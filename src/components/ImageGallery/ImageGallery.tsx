@@ -1,8 +1,10 @@
+import React from "react";
+
 import ImageCard from "../ImageCard/ImageCard";
 import style from "./ImagGallery.module.css";
+import { imageGalleryProp } from "../../types/image.types";
 
-
-const ImageGallery = ({ images, onImageClick }) => {
+const ImageGallery = ({ images, onImageClick }: imageGalleryProp) => {
   return (
     <ul className="cardOfImg">
       {images.map((img) => (
